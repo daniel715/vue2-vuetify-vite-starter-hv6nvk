@@ -76,7 +76,6 @@ export default defineComponent({
       this.param = data
     },
     parseImagesArrayToJson(response) {
-      console.log('response', response)
       let salida = []
       response.data.forEach((item) => {
         let objeto = {}
@@ -95,8 +94,8 @@ export default defineComponent({
         seen.add(el.id)
         return !duplicate
       })
-      console.log(filteredArr)
-      return filteredArr
+      console.log('filteredArr', filteredArr)
+      return this.agregarAutor(filteredArr)
     },
     async getCategorias() {
       let response = await this.$axios.get('categoria/list')
@@ -111,6 +110,26 @@ export default defineComponent({
         this.$refs.visorlibro.items = this.items
       }, 500)
       this.loading = false
+    },
+    agregarAutor(array) {
+      console.log('asdasdhaksjhda')
+      let arrayAutores = []
+      let i = 0
+
+      array.forEach(async (element) => {
+        let response = await this.$axios.get('autor/find/' + element.idAutor)
+        console.log('response autor', response)
+        arrayAutores.push(response.data.nombre)
+      })
+      console.log('aarray autores', arrayAutores)
+      setTimeout(() => {
+        array.forEach((element) => {
+          element['autor'] = arrayAutores[i]
+          i = i + 1
+        })
+      }, 500)
+      console.log('array con autores', array)
+      return array
     },
   },
   computed: {
