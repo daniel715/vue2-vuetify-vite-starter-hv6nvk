@@ -1,6 +1,6 @@
 <template>
-  <v-dialog class="dialog" v-model="dialog" max-width="90%">
-    <v-container class="ma-0 pa-0 ">
+  <v-dialog class="dialog" v-model="dialog" max-width="80%">
+    <v-container class="ma-0 pa-0">
       <v-card>
         <v-row class="column">
           <v-col cols="7" align="center">
@@ -13,8 +13,10 @@
           </div> -->
           <v-col cols="4">
             <div class="mt-8">
-              <v-alert v-if="isDisponible" outlined type="success" text icon="mdi-school"> Libro Disponible </v-alert>
-              <v-alert v-else outlined type="warning" prominent border="left">
+              <v-alert v-if="isDisponible" outlined type="success" text :icon=false >
+                Libro Disponible
+              </v-alert>
+              <v-alert v-else outlined type="warning" prominent>
                 Libro actualmente no disponible
               </v-alert>
               <div class="d-flex flex-column">
@@ -35,7 +37,7 @@
                   S/{{ libro.precio }}
                 </div>
                 <div class="property">
-                  <div class="propertyname">Resumen</div>
+                  <div class="propertyname">Descripcion</div>
                   {{ libro.resumen }}
                 </div>
               </div>
@@ -83,10 +85,10 @@ export default {
 .propertyname {
   font-weight: bold;
 }
-.dialog{
-    height: 110vh
+.dialog {
+  height: 110vh;
 }
-column{
-    padding: 0px
+column {
+  padding: 0px;
 }
 </style>

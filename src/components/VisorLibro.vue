@@ -1,14 +1,14 @@
 <template>
-  <div>
+  <div class="pa-5">
     <v-row>
       <v-col>
         <v-row>
           <v-col v-for="item in items" :key="item.id" class="d-flex child-flex" cols="2">
             <v-hover v-slot="{ hover }">
-              <v-card :elevation="hover ? 12 : 2" :class="{ 'on-hover': hover }" @click="openModal(item)">
-                <v-img :src="item.imageurl[0]" aspect-ratio="1" class="">
+              <v-card :elevation="hover ? 12 : 1" :class="{ 'on-hover': hover }" @click="openModal(item)">
+                <v-img :src="item.imageurl[0]" aspect-ratio="1">
                   <template v-slot:placeholder>
-                    <v-row class="fill-height ma-0" align-items="center" justify="center">
+                    <v-row class="ma-0" align-items="center" justify="center">
                       <v-progress-circular indeterminate color="grey lighten-5"></v-progress-circular>
                     </v-row>
                   </template>
@@ -56,6 +56,6 @@ export default {
 }
 
 .v-card:not(.on-hover) {
-  opacity: 0.6;
+  opacity: 1;
 }
 </style>

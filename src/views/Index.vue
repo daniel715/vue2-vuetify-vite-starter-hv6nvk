@@ -1,43 +1,57 @@
 <template>
   <div
-    class="d-flex text-center flex-column flex-md-row flex-grow-1"
+    class="d-flex text-center flex-column flex-grow-1"
     :style="{
       backgroundSize: 'cover',
-      // backgroundImage: `url(${image})`,
+      backgroundImage: `url(${image})`,
       backgroundPosition: 'center center',
       backgroundRepeat: 'no-repeat',
       backgroundAttachment: 'fixed',
     }"
   >
-    <v-container>
+    <v-container fill-height style="width: 80%; position: absolute; right: 1%">
       <v-row>
-        <v-col cols="12">
-          <v-text-field
-            v-model="select"
-            :messages="message"
-            label="Buscar"
-            outlined
-            dense
-            @keydown.enter="buscar"
-            @change="input"
-            hide-selected
-            hide-no-data
-          ></v-text-field>
-          <div style="min-height: 4px">
-            <v-progress-linear :active="loading" :indeterminate="loading" color="blue accent-4"></v-progress-linear>
-          </div>
-          <div>Buscar por Categoria</div>
-          <v-chip-group active-class="primary--text">
-            <v-chip @click="buscarLibrosPorCategoria(categoria.id)" v-for="categoria in categorias" :key="categoria.id">
-              {{ categoria.nombre }}
-            </v-chip>
-          </v-chip-group>
-          <div class="mt-5">
-            <visor-libro v-if="success" :items="items" ref="visorlibro" />
+        <v-col cols="9">
+          <div :class="success ? 'buscador-animation' : ''">
+            <v-text-field
+              v-model="select"
+              @keydown.enter="buscar"
+              @change="input"
+              background-color="white"
+              color="white"
+              rounded
+              height="40px"
+              solo
+              dense
+              autofocus
+              label="Buscar libro o autor"
+            ></v-text-field>
+            <v-progress-linear :active="loading" :indeterminate="loading" color="white"></v-progress-linear>
+            <v-row justify="center">
+              <v-chip-group active-class="primary--text">
+                <v-chip
+                  @click="buscarLibrosPorCategoria(categoria.id)"
+                  v-for="categoria in categorias"
+                  :key="categoria.id"
+                >
+                  {{ categoria.nombre }}
+                </v-chip>
+              </v-chip-group>
+            </v-row>
           </div>
         </v-col>
       </v-row>
     </v-container>
+
+    <transition name="fade" mode="out-in">
+      <v-row v-if="showVisor" align="center" justify="center" >
+        <v-col cols="8">
+          <div class="visor-libro">
+            <visor-libro :items="items" ref="visorlibro" />
+          </div>
+        </v-col>
+      </v-row>
+    </transition>
   </div>
 </template>
   
@@ -57,6 +71,7 @@ export default defineComponent({
     param: '',
     response: [],
     categorias: [],
+    showVisor: false,
   }),
 
   methods: {
@@ -66,9 +81,25 @@ export default defineComponent({
       console.log('buscando', this.select)
       this.response = await this.$axios.get('/libro/buscar/' + this.select)
       if (this.response.status == '200') this.success = true
-      this.items = this.parseImagesArrayToJson(this.response)
+      this.items = await this.parseImagesArrayToJson(this.response)
       setTimeout(() => {
-        this.$refs.visorlibro.items = this.items
+        this.showVisor = true
+        setTimeout(() => {
+          this.$refs.visorlibro.items = this.items
+        }, 500)
+      }, 500)
+      this.loading = false
+    },
+    async buscarLibrosPorCategoria(data) {
+      this.loading = true
+      this.response = await this.$axios.get('/libro/buscarporcategoria/' + data)
+      if (this.response.status == '200') this.success = true
+      this.items = await this.parseImagesArrayToJson(this.response)
+      setTimeout(() => {
+        this.showVisor = true
+        setTimeout(() => {
+          this.$refs.visorlibro.items = this.items
+        }, 500)
       }, 500)
       this.loading = false
     },
@@ -102,17 +133,7 @@ export default defineComponent({
       this.categorias = response.data
       console.log(response)
     },
-    async buscarLibrosPorCategoria(data) {
-      this.response = await this.$axios.get('/libro/buscarporcategoria/' + data)
-      if (this.response.status == '200') this.success = true
-      this.items = this.parseImagesArrayToJson(this.response)
-      setTimeout(() => {
-        this.$refs.visorlibro.items = this.items
-      }, 500)
-      this.loading = false
-    },
     agregarAutor(array) {
-      console.log('asdasdhaksjhda')
       let arrayAutores = []
       let i = 0
 
@@ -155,4 +176,26 @@ export default defineComponent({
 })
 </script>
   
+<style scoped>
+.buscador-animation {
+  transform: translate(0px, -300px);
+  transition: transform 2s;
+}
+.fade-enter-active,
+.fade-leave-active {
+  transition-duration: 1s;
+  transition-property: opacity;
+  transition-timing-function: ease;
+}
+
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
+}
+.visor-libro {
+  background-color: rgba(247, 247, 247, 0.87);
+  opacity: 0.8;
+  height: 40vh;
+}
+</style>
   

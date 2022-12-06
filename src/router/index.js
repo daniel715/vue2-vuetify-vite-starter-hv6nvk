@@ -2,6 +2,7 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 import Index from '@/views/Index.vue';
 import admin from '@/views/Admin.vue'
+import app from '@/App.vue'
 Vue.use(VueRouter);
 
 const routes = [
@@ -28,5 +29,6 @@ const router = new VueRouter({
   base: '/',
   routes
 });
+
 
 export default router;
