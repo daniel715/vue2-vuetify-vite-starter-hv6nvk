@@ -44,7 +44,7 @@
     </v-container>
 
     <transition name="fade" mode="out-in">
-      <v-row v-if="showVisor" align="center" justify="center" >
+      <v-row v-if="showVisor" align="center" justify="center">
         <v-col cols="8">
           <div class="visor-libro">
             <visor-libro :items="items" ref="visorlibro" />
@@ -59,10 +59,12 @@
 import { ref, defineComponent } from '@vue/composition-api'
 import { mapState } from 'vuex'
 import VisorLibro from '@/components/VisorLibro.vue'
+import mixin from '@/mixins/global.mixin'
 export default defineComponent({
   components: {
     VisorLibro,
   },
+  mixins: [mixin],
   data: () => ({
     select: [],
     loading: false,
@@ -105,52 +107,6 @@ export default defineComponent({
     },
     input(data) {
       this.param = data
-    },
-    parseImagesArrayToJson(response) {
-      let salida = []
-      response.data.forEach((item) => {
-        let objeto = {}
-        for (let prop in item) {
-          if (prop == 'imageurl') objeto[prop] = JSON.parse(item[prop])
-          else objeto[prop] = item[prop]
-        }
-        salida.push(objeto)
-      })
-      return this.deleteDuplicateRecords(salida)
-    },
-    deleteDuplicateRecords(arr) {
-      const seen = new Set()
-      const filteredArr = arr.filter((el) => {
-        const duplicate = seen.has(el.id)
-        seen.add(el.id)
-        return !duplicate
-      })
-      console.log('filteredArr', filteredArr)
-      return this.agregarAutor(filteredArr)
-    },
-    async getCategorias() {
-      let response = await this.$axios.get('categoria/list')
-      this.categorias = response.data
-      console.log(response)
-    },
-    agregarAutor(array) {
-      let arrayAutores = []
-      let i = 0
-
-      array.forEach(async (element) => {
-        let response = await this.$axios.get('autor/find/' + element.idAutor)
-        console.log('response autor', response)
-        arrayAutores.push(response.data.nombre)
-      })
-      console.log('aarray autores', arrayAutores)
-      setTimeout(() => {
-        array.forEach((element) => {
-          element['autor'] = arrayAutores[i]
-          i = i + 1
-        })
-      }, 500)
-      console.log('array con autores', array)
-      return array
     },
   },
   computed: {
