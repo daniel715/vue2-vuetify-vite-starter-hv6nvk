@@ -6,6 +6,7 @@
           <v-toolbar-title>Administrador libros</v-toolbar-title>
           <v-divider class="mx-4" inset vertical></v-divider>
           <v-spacer></v-spacer>
+          <v-btn class="primary" @click="addItem">Agregar Libro</v-btn>
         </v-toolbar>
       </template>
       <template v-slot:item.actions="{ item }">
@@ -18,18 +19,18 @@
         <v-btn color="primary" @click="initialize"></v-btn>
       </template>
     </v-data-table>
-    <edit-dialog 
+    <add-item-dialog 
       ref="editDialog"
     />
   </div>
 </template>
 <script>
 import mixin from '@/mixins/global.mixin'
-import editDialog from '@/components/dialogs/EditDialog.vue'
+import addItemDialog from '@/components/dialogs/AddItemDialog.vue'
 export default {
   mixins: [mixin],
   components: {
-    editDialog,
+    addItemDialog,
   },
   data: () => ({
     dialog: false,
@@ -76,9 +77,15 @@ export default {
   methods: {
     async initialize() {},
 
+    addItem(){
+      this.editedIndex = -1
+      this.$refs.editDialog.dialog = true
+      this.$refs.editDialog.editedIndex = -1
+    },
     editItem(item) {
       console.log('item', item)
       this.editedIndex = this.books.indexOf(item)
+      this.$refs.editDialog.editedIndex = this.editedIndex
       this.editedItem = item
       this.$refs.editDialog.dialog = true
     },
