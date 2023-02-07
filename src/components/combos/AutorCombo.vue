@@ -25,7 +25,7 @@ export default {
       let response = await this.$axios.get('autor/list')
       console.log(response)
       this.items = response.data
-      this.selectedItem = this.items[0]
+      // this.selectedItem = this.items[0]
     },
   },
   watch: {
