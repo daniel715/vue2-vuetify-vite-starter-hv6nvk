@@ -114,7 +114,6 @@ export default {
       document.getElementById(this.fileInputId).click();
     },
     onChangeImage() {
-      console.log("this.$refs.fileInput.files;",this.$refs.fileInput.files)
       let images = this.$refs.fileInput.files;
       console.log(images)
       if (images != null) {

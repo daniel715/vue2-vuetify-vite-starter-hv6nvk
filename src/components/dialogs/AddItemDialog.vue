@@ -30,7 +30,7 @@
               <v-text-field outlined v-model="editedItem.year" label="Año"></v-text-field>
             </v-col>
             <v-col cols="12" sm="6" md="8">
-              <image-input @input="formatImagesString(data)" label="Antes" height="190px" width="280px" base64 />
+              <image-input @input="formatImagesString" label="Foto" height="190px" width="280px" base64 />
             </v-col>
           </v-row>
         </v-container>
@@ -49,6 +49,7 @@ import { defineComponent } from '@vue/composition-api'
 import AutorCombo from '@/components/combos/AutorCombo.vue'
 import CategoriaCombo from '@/components/combos/CategoriaCombo.vue'
 import ImageInput from '@/components/inputs/ImageInput.vue'
+import { UUID } from 'uuidjs'
 export default defineComponent({
   components: {
     AutorCombo,
@@ -60,10 +61,11 @@ export default defineComponent({
     editedIndex: -1,
     imageArrayTemp: [],
     editedItem: {
+      id: '',
       nombre: '',
       year: '',
       resumen: '',
-      autorId: '',
+      idAutor: '',
       precio: 0.0,
       stock: 0,
       image: '',
@@ -76,16 +78,13 @@ export default defineComponent({
       return this.editedIndex === -1 ? 'Agregar Libro' : 'Editar Libro'
     },
   },
-  watch: {
-    editedItem(newVal, old) {
-      console.log('agregando una imagen')
-    },
-  },
   methods: {
     async save() {
       if (this.editedIndex > -1) {
         Object.assign(this.books[this.editedIndex], this.editedItem)
       } else {
+        this.editedItem.image = this.imageArrayTemp
+        this.editedItem.id = UUID.generate()
         let response = await this.$axios.post('libro/save', this.editedItem)
         console.log(response)
       }
@@ -101,7 +100,7 @@ export default defineComponent({
     setAutorId(data) {
       if (data != null) {
         console.log('en add item dialog', data)
-        this.editedItem.autorId = data
+        this.editedItem.idAutor = data
       }
     },
     setCategorias(data) {
@@ -112,11 +111,9 @@ export default defineComponent({
     },
     formatImagesString(data) {
       if (data != null) {
-        console.log('agregando una imagen', data)
         let token = `${data}`
         console.log('token', token)
         this.imageArrayTemp.push(token)
-        console.log('length de  imagetemp', this.imageArrayTemp.length)
       }
     },
   },
