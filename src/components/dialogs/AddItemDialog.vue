@@ -49,6 +49,7 @@ import { defineComponent } from '@vue/composition-api'
 import AutorCombo from '@/components/combos/AutorCombo.vue'
 import CategoriaCombo from '@/components/combos/CategoriaCombo.vue'
 import ImageInput from '@/components/inputs/ImageInput.vue'
+import mixin from '@/mixins/global.mixin'
 import { UUID } from 'uuidjs'
 export default defineComponent({
   components: {
@@ -56,6 +57,7 @@ export default defineComponent({
     CategoriaCombo,
     ImageInput,
   },
+  mixins: [mixin],
   data: () => ({
     dialog: false,
     editedIndex: -1,
@@ -71,6 +73,7 @@ export default defineComponent({
       image: '',
       categorias: [],
     },
+    payload: {}
   }),
 
   computed: {
@@ -83,12 +86,28 @@ export default defineComponent({
       if (this.editedIndex > -1) {
         Object.assign(this.books[this.editedIndex], this.editedItem)
       } else {
-        this.editedItem.image = this.imageArrayTemp
         this.editedItem.id = UUID.generate()
         let response = await this.$axios.post('libro/save', this.editedItem)
-        console.log(response)
+        // console.log(response)
+        if (response.status == '201') {
+          this.payload.libroId = this.editedItem.id;
+          this.parseString(JSON.stringify(this.editedItem.categorias))
+          let response = await this.$axios.post('librocategoria/save', this.payload)
+          console.log(response)
+        }
       }
       this.close()
+    },
+    formatImagesString(data) {
+      if (data != null) {
+        let token = `${data}`
+        this.imageArrayTemp.push(token)
+        this.editedItem.image = this.imageArrayTemp
+      }
+    },
+
+    parseString(data) {
+      this.payload.categoriasId = data
     },
     close() {
       this.dialog = false
@@ -103,17 +122,11 @@ export default defineComponent({
         this.editedItem.idAutor = data
       }
     },
-    setCategorias(data) {
+    async setCategorias(data) {
       if (data != null) {
         console.log(data)
-        this.editedItem.categorias = data.map((item) => item.id)
-      }
-    },
-    formatImagesString(data) {
-      if (data != null) {
-        let token = `${data}`
-        console.log('token', token)
-        this.imageArrayTemp.push(token)
+        this.editedItem.categorias = await data.map((item) => item.id )
+        console.log(this.editedItem.categorias)
       }
     },
   },
