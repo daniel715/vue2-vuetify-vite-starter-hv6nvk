@@ -1,6 +1,6 @@
   <template>
-  <v-dialog v-model="dialog" max-width="1000px">
-    <v-card>
+  <v-dialog @click:outside="close" v-model="dialog" max-width="1000px">
+    <v-card  >
       <v-card-title>
         <span class="text-h5">{{ formTitle }}</span>
       </v-card-title>
@@ -12,10 +12,10 @@
               <v-text-field outlined v-model="editedItem.nombre" label="Titulo"></v-text-field>
             </v-col>
             <v-col cols="12" sm="6" md="8">
-              <autor-combo @input="setAutorId" />
+              <autor-combo @input="setAutorId"  ref="autorCombo" />
             </v-col>
             <v-col cols="12" sm="6" md="8">
-              <categoria-combo @input="setCategorias" />
+              <categoria-combo @input="setCategorias" ref="categoriaCombo" />
             </v-col>
             <v-col cols="12" sm="6" md="8">
               <v-text-field type="number" outlined v-model.number="editedItem.stock" label="Stock"></v-text-field>
@@ -30,7 +30,7 @@
               <v-text-field outlined v-model="editedItem.year" label="Año"></v-text-field>
             </v-col>
             <v-col cols="12" sm="6" md="8">
-              <image-input @input="formatImagesString" label="Foto" height="190px" width="280px" base64 />
+              <image-input ref="imageInput" @input="formatImagesString" label="Foto" height="190px" width="280px" base64 />
             </v-col>
           </v-row>
         </v-container>
@@ -73,6 +73,23 @@ export default defineComponent({
       imageurl: '',
       categoriasId: [],
       categorias: []
+    },
+    defaultItem:{
+      id: '',
+      nombre: '',
+      year: '',
+      resumen: '',
+      idAutor: '',
+      precio: 0.0,
+      stock: 0,
+      imageurl: '',
+      categoriasId: [],
+      categorias: []
+    },
+    defaultPayload: {
+      categorias: "",
+      categoriasId:"",
+      libroId: ""
     },
     payload: {}
   }),
@@ -118,6 +135,12 @@ export default defineComponent({
         this.editedItem = Object.assign({}, this.defaultItem)
         this.editedIndex = -1
       })
+      this.imageArrayTemp = []
+      this.payload = Object.assign({}, this.defaultPayload)
+      this.$refs.autorCombo.selectedItem = {}
+      this.$refs.categoriaCombo.select = []
+      this.$refs.imageInput.img = null
+
     },
     setAutorId(data) {
       if (data != null) {
