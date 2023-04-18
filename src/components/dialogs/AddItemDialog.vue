@@ -70,8 +70,9 @@ export default defineComponent({
       idAutor: '',
       precio: 0.0,
       stock: 0,
-      image: '',
-      categorias: [],
+      imageurl: '',
+      categoriasId: [],
+      categorias: []
     },
     payload: {}
   }),
@@ -91,7 +92,8 @@ export default defineComponent({
         // console.log(response)
         if (response.status == '201') {
           this.payload.libroId = this.editedItem.id;
-          this.parseString(JSON.stringify(this.editedItem.categorias))
+          this.payload.categorias = JSON.stringify(this.editedItem.categorias)
+          this.parseString(JSON.stringify(this.editedItem.categoriasId))
           let response = await this.$axios.post('librocategoria/save', this.payload)
           console.log(response)
         }
@@ -99,10 +101,11 @@ export default defineComponent({
       this.close()
     },
     formatImagesString(data) {
+      console.log("data",data)
       if (data != null) {
         let token = `${data}`
         this.imageArrayTemp.push(token)
-        this.editedItem.image = this.imageArrayTemp
+        this.editedItem.imageurl = JSON.stringify(this.imageArrayTemp)
       }
     },
 
@@ -125,10 +128,15 @@ export default defineComponent({
     async setCategorias(data) {
       if (data != null) {
         console.log(data)
-        this.editedItem.categorias = await data.map((item) => item.id )
+        this.editedItem.categoriasId = await data.map((item) => item.id )
+        this.editedItem.categorias = await data.map((item)=> item.nombre)
+        console.log(this.editedItem.categoriasId)
         console.log(this.editedItem.categorias)
       }
     },
+    async refresh(){
+      this.$emit("refresh")
+    }
   },
 })
 </script>

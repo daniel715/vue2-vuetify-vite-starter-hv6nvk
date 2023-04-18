@@ -16,12 +16,10 @@
         <v-btn icon color="red" small @click="deleteItem(item)" elevation="2"></v-btn>
       </template>
       <template v-slot:no-data>
-        <v-btn color="primary" @click="initialize"></v-btn>
+        <v-btn color="primary" @click="getLibros()">Recargar</v-btn>
       </template>
     </v-data-table>
-    <add-item-dialog 
-      ref="editDialog"
-    />
+    <add-item-dialog @refresh="getLibros()" ref="editDialog" />
   </div>
 </template>
 <script>
@@ -69,15 +67,9 @@ export default {
       val || this.closeDelete()
     },
   },
-
-  created() {
-    this.initialize()
-  },
-
   methods: {
-    async initialize() {},
 
-    addItem(){
+    addItem() {
       this.editedIndex = -1
       this.$refs.editDialog.dialog = true
       this.$refs.editDialog.editedIndex = -1

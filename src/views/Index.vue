@@ -30,7 +30,7 @@
             <v-row justify="center">
               <v-chip-group active-class="primary--text">
                 <v-chip
-                  @click="buscarLibrosPorCategoria(categoria.id)"
+                  @click="buscarLibrosPorCategoria(categoria.nombre)"
                   v-for="categoria in categorias"
                   :key="categoria.id"
                 >
