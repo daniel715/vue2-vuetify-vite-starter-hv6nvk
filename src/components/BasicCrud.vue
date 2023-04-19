@@ -14,6 +14,9 @@
           <v-icon> mdi-pencil </v-icon>
         </v-btn>
         <v-btn icon color="red" small @click="deleteItem(item)" elevation="2"></v-btn>
+        <v-btn class="mx-2" fab dark small color="primary">
+          <v-icon dark> mdi-minus </v-icon>
+        </v-btn>
       </template>
       <template v-slot:no-data>
         <v-btn color="primary" @click="getLibros()">Recargar</v-btn>
@@ -68,7 +71,6 @@ export default {
     },
   },
   methods: {
-
     addItem() {
       this.editedIndex = -1
       this.$refs.editDialog.dialog = true
