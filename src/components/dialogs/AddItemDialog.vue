@@ -112,7 +112,9 @@ export default defineComponent({
           this.payload.categorias = JSON.stringify(this.editedItem.categorias)
           this.parseString(JSON.stringify(this.editedItem.categoriasId))
           let response = await this.$axios.post('librocategoria/save', this.payload)
-          console.log(response)
+          if(response.status == "201"){
+            this.refresh()
+          }
         }
       }
       this.close()
@@ -125,7 +127,6 @@ export default defineComponent({
         this.editedItem.imageurl = JSON.stringify(this.imageArrayTemp)
       }
     },
-
     parseString(data) {
       this.payload.categoriasId = data
     },
@@ -157,8 +158,15 @@ export default defineComponent({
         console.log(this.editedItem.categorias)
       }
     },
-    async refresh(){
+    refresh(){
       this.$emit("refresh")
+    },
+    setAutorCombo(){
+      console.log(this.editedItem)
+      this.$refs.autorCombo.selectedItem = {
+        id : this.editedItem.idAutor,
+        nombre : this.editedItem.autor
+      }
     }
   },
 })

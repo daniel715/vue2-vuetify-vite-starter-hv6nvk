@@ -1,5 +1,6 @@
 export default {
-    methods: {
+    methods:
+    {
         parseImagesArrayToJson(response) {
             let salida = []
             response.data.forEach((item) => {
@@ -12,6 +13,7 @@ export default {
             })
             return this.deleteDuplicateRecords(salida)
         },
+
         deleteDuplicateRecords(arr) {
             const seen = new Set()
             const filteredArr = arr.filter((el) => {
@@ -19,27 +21,32 @@ export default {
                 seen.add(el.id)
                 return !duplicate
             })
-            return this.agregarAutor(filteredArr)
+            return this.agregarAutoryCategorias(filteredArr)
         },
-        agregarAutor(array) {
+
+        agregarAutoryCategorias(array) {
+            console.log(array)
             let arrayAutores = []
+            let arraycategorias = []
+            let arraycategoriasId = []
             let i = 0
 
             array.forEach(async (element) => {
-                let response = await this.$axios.get('autor/find/' + element.idAutor)
-                arrayAutores.push(response.data.nombre)
+                let autoresResponse = await this.$axios.get('autor/find/' + element.idAutor)
+                let categoriasResponse = await this.$axios.get('librocategoria/' + element.id)
+                arrayAutores.push(autoresResponse.data.nombre)
+                arraycategorias.push(categoriasResponse.data.categorias)
+                arraycategoriasId.push(categoriasResponse.data.categoriasId)
             })
             setTimeout(() => {
                 array.forEach((element) => {
                     element['autor'] = arrayAutores[i]
+                    element['categorias'] = JSON.parse(arraycategorias[i])
+                    element['categoriasId'] = JSON.parse(arraycategoriasId[i])
                     i = i + 1
                 })
             }, 500)
             return array
-        },
-        async getCategorias() {
-            let response = await this.$axios.get('categoria/list')
-            this.categorias = response.data
         },
     }
 }

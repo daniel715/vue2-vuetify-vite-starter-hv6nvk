@@ -105,6 +105,10 @@ export default defineComponent({
       }, 500)
       this.loading = false
     },
+    async getCategorias() {
+      let response = await this.$axios.get('categoria/list')
+      this.categorias = response.data
+    },
     input(data) {
       this.param = data
     },

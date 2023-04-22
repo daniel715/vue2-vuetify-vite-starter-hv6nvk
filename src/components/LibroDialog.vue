@@ -62,7 +62,7 @@ export default {
   }),
   computed: {
     mainImage() {
-      return this.libro.imageurl[0]
+      return this.libro.imageurl[this.libro.imageurl.length-1]
     },
     otherImages() {
       return this.libro.imageurl.filter((item) => {

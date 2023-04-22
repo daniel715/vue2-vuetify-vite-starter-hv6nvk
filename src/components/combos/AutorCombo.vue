@@ -15,7 +15,6 @@
 <script>
 export default {
   data: () => ({
-    select: ['Vuetify', 'Programming'],
     items: [],
     selectedItem: {},
   }),
