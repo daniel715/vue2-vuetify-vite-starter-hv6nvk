@@ -25,7 +25,6 @@ export default {
         },
 
         agregarAutoryCategorias(array) {
-            console.log(array)
             let arrayAutores = []
             let arraycategorias = []
             let arraycategoriasId = []
@@ -37,15 +36,11 @@ export default {
                 arrayAutores.push(autoresResponse.data.nombre)
                 arraycategorias.push(categoriasResponse.data.categorias)
                 arraycategoriasId.push(categoriasResponse.data.categoriasId)
+                element['autor'] = arrayAutores[i]
+                element['categorias'] = JSON.parse(arraycategorias[i])
+                element['categoriasId'] = JSON.parse(arraycategoriasId[i])
+                i = i + 1
             })
-            setTimeout(() => {
-                array.forEach((element) => {
-                    element['autor'] = arrayAutores[i]
-                    element['categorias'] = JSON.parse(arraycategorias[i])
-                    element['categoriasId'] = JSON.parse(arraycategoriasId[i])
-                    i = i + 1
-                })
-            }, 500)
             return array
         },
     }

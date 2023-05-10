@@ -1,6 +1,6 @@
   <template>
   <v-dialog @click:outside="close" v-model="dialog" max-width="1000px">
-    <v-card  >
+    <v-card>
       <v-card-title>
         <span class="text-h5">{{ formTitle }}</span>
       </v-card-title>
@@ -12,7 +12,7 @@
               <v-text-field outlined v-model="editedItem.nombre" label="Titulo"></v-text-field>
             </v-col>
             <v-col cols="12" sm="6" md="8">
-              <autor-combo @input="setAutorId"  ref="autorCombo" />
+              <autor-combo @input="setAutorId" ref="autorCombo" />
             </v-col>
             <v-col cols="12" sm="6" md="8">
               <categoria-combo @input="setCategorias" ref="categoriaCombo" />
@@ -30,7 +30,14 @@
               <v-text-field outlined v-model="editedItem.year" label="Año"></v-text-field>
             </v-col>
             <v-col cols="12" sm="6" md="8">
-              <image-input ref="imageInput" @input="formatImagesString" label="Foto" height="190px" width="280px" base64 />
+              <image-input
+                ref="imageInput"
+                @input="formatImagesString"
+                label="Foto"
+                height="190px"
+                width="280px"
+                base64
+              />
             </v-col>
           </v-row>
         </v-container>
@@ -72,9 +79,9 @@ export default defineComponent({
       stock: 0,
       imageurl: '',
       categoriasId: [],
-      categorias: []
+      categorias: [],
     },
-    defaultItem:{
+    defaultItem: {
       id: '',
       nombre: '',
       year: '',
@@ -84,14 +91,14 @@ export default defineComponent({
       stock: 0,
       imageurl: '',
       categoriasId: [],
-      categorias: []
+      categorias: [],
     },
     defaultPayload: {
-      categorias: "",
-      categoriasId:"",
-      libroId: ""
+      categorias: '',
+      categoriasId: '',
+      libroId: '',
     },
-    payload: {}
+    payload: {},
   }),
 
   computed: {
@@ -101,18 +108,30 @@ export default defineComponent({
   },
   methods: {
     async save() {
+      // editando libro
       if (this.editedIndex > -1) {
-        Object.assign(this.books[this.editedIndex], this.editedItem)
+        let respuesta = await this.$axios.patch('libro/update/' + this.editedItem.id, this.editedItem)
+        console.log(respuesta)
+        if (respuesta.status == '200') {
+          this.payload.categorias = JSON.stringify(this.editedItem.categorias)
+          this.parseString(JSON.stringify(this.editedItem.categoriasId))
+          let response = await this.$axios.patch('librocategoria/update/' + this.editedItem.id, this.payload)
+          if (response.status == '201') {
+            this.refresh()
+          }
+        }
+        this.refresh()
       } else {
+        // creando libro nuevo
         this.editedItem.id = UUID.generate()
         let response = await this.$axios.post('libro/save', this.editedItem)
         // console.log(response)
         if (response.status == '201') {
-          this.payload.libroId = this.editedItem.id;
+          this.payload.libroId = this.editedItem.id
           this.payload.categorias = JSON.stringify(this.editedItem.categorias)
           this.parseString(JSON.stringify(this.editedItem.categoriasId))
           let response = await this.$axios.post('librocategoria/save', this.payload)
-          if(response.status == "201"){
+          if (response.status == '201') {
             this.refresh()
           }
         }
@@ -120,7 +139,7 @@ export default defineComponent({
       this.close()
     },
     formatImagesString(data) {
-      console.log("data",data)
+      console.log('data', data)
       if (data != null) {
         let token = `${data}`
         this.imageArrayTemp.push(token)
@@ -140,8 +159,7 @@ export default defineComponent({
       this.payload = Object.assign({}, this.defaultPayload)
       this.$refs.autorCombo.selectedItem = {}
       this.$refs.categoriaCombo.select = []
-      this.$refs.imageInput.img = null
-
+      this.$refs.imageInput.url = null
     },
     setAutorId(data) {
       if (data != null) {
@@ -152,22 +170,47 @@ export default defineComponent({
     async setCategorias(data) {
       if (data != null) {
         console.log(data)
-        this.editedItem.categoriasId = await data.map((item) => item.id )
-        this.editedItem.categorias = await data.map((item)=> item.nombre)
+        this.editedItem.categoriasId = await data.map((item) => item.id)
+        this.editedItem.categorias = await data.map((item) => item.nombre)
         console.log(this.editedItem.categoriasId)
         console.log(this.editedItem.categorias)
       }
     },
-    refresh(){
-      this.$emit("refresh")
+    refresh() {
+      this.$emit('refresh')
     },
-    setAutorCombo(){
+    setAutorCombo() {
+      console.log('seteando autor combo')
+      setTimeout(() => {
+        this.$refs.autorCombo.selectedItem = this.editedItem.idAutor
+      }, 100)
+    },
+    setCategoriasCombo() {
+      console.log('seteando categorias')
       console.log(this.editedItem)
-      this.$refs.autorCombo.selectedItem = {
-        id : this.editedItem.idAutor,
-        nombre : this.editedItem.autor
-      }
-    }
+      let categorias = []
+      let index = 0
+      this.editedItem.categoriasId.forEach((element) => {
+        let object = {
+          id: element,
+          nombre: this.editedItem.categorias[index],
+        }
+        categorias.push(object)
+        index = index + 1
+      })
+
+      setTimeout(() => {
+        console.log('Item categorias', categorias)
+        this.$refs.categoriaCombo.select = categorias
+      }, 100)
+    },
+    setImageInput() {
+      setTimeout(() => {
+        let array = JSON.parse(this.editedItem.imageurl)
+        this.$refs.imageInput.url = array[array.length -1]
+      }, 100)
+      this.formatImagesString(this.editedItem.imageurl[this.editedItem.imageurl.length - 1])
+    },
   },
 })
 </script>

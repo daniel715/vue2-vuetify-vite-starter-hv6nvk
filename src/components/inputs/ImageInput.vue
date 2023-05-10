@@ -9,7 +9,7 @@
       >{{ label }}</label
     >
     <v-img
-      v-if="img"
+      v-if="url"
       :src="url"
       :max-width="width"
       :max-height="height"

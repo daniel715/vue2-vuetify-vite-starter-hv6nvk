@@ -79,13 +79,13 @@ export default {
       this.$refs.editDialog.editedIndex = -1
     },
     editItem(item) {
-      console.log('item', item)
+      console.log("editando item", item)
       this.editedItem = item
       this.editedIndex = this.books.indexOf(item) // para que cambie el titulo
       this.setRefs(item)
+      this.getLibros()
     },
     deleteItem(item) {
-      console.log(item)
       this.deleteBookId = item.id
       this.$refs.confirmationDialog.dialog = true
     },
@@ -135,18 +135,19 @@ export default {
       let result = this.parseImagesArrayToJson(response)
       setTimeout(() => {
         this.books = result
-      }, 1000)
+      }, 500)
     },
     refresh() {
       this.getLibros()
     },
     setRefs(item) {
+      console.log("seteando refs con item", item)
       this.$refs.editDialog.editedIndex = this.editedIndex
-      this.$refs.editDialog.dialog = true
       this.$refs.editDialog.editedItem = item
       this.$refs.editDialog.setAutorCombo()
-      // this.$refs.editDialog.setCategoriaCombo()
-      // this.$refs.editDialog.setImageInput()
+      this.$refs.editDialog.setCategoriasCombo()
+      this.$refs.editDialog.setImageInput()
+      this.$refs.editDialog.dialog = true
     },
   },
   created() {
