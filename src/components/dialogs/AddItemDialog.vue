@@ -12,7 +12,10 @@
               <v-text-field outlined v-model="editedItem.nombre" label="Titulo"></v-text-field>
             </v-col>
             <v-col cols="12" sm="6" md="8">
-              <autor-combo @input="setAutorId" ref="autorCombo" />
+              <v-row>
+                <autor-combo @input="setAutorId" ref="autorCombo" />
+                <v-btn color="success" elevation="2" icon> <v-icon>mdi-plus</v-icon></v-btn>
+              </v-row>
             </v-col>
             <v-col cols="12" sm="6" md="8">
               <categoria-combo @input="setCategorias" ref="categoriaCombo" />
@@ -207,7 +210,7 @@ export default defineComponent({
     setImageInput() {
       setTimeout(() => {
         let array = JSON.parse(this.editedItem.imageurl)
-        this.$refs.imageInput.url = array[array.length -1]
+        this.$refs.imageInput.url = array[array.length - 1]
       }, 100)
       this.formatImagesString(this.editedItem.imageurl[this.editedItem.imageurl.length - 1])
     },

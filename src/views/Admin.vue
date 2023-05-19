@@ -24,17 +24,17 @@
       </v-row>
     </v-container>
     <v-container v-else>
-      <basic-crud />
+      <tab-crud />
     </v-container>
   </div>
 </template>
 
 <script>
 import { ref, defineComponent } from '@vue/composition-api'
-import basicCrud from '@/components/BasicCrud.vue'
+import tabCrud from '@/components/TabCrud.vue'
 export default defineComponent({
   components: {
-    basicCrud,
+    tabCrud,
   },
   data: () => ({
     loading: false,

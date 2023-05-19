@@ -3,10 +3,10 @@
     <v-data-table :headers="headers" :items="books" class="elevation-1">
       <template v-slot:top>
         <v-toolbar flat>
-          <v-toolbar-title>Administrador libros</v-toolbar-title>
+          <v-toolbar-title>Administrador {{ entidad }}</v-toolbar-title>
           <v-divider class="mx-4" inset vertical></v-divider>
-          <v-btn class="primary" @click="addItem">Agregar Libro</v-btn>
-          <v-btn class="primary ml-5" @click="getLibros()">Refrescar</v-btn>
+          <v-btn class="primary" @click="addItem()">Agregar</v-btn>
+          <v-btn class="primary ml-5" @click="getItems()">Refrescar</v-btn>
         </v-toolbar>
       </template>
       <template v-slot:item.actions="{ item }">
@@ -22,7 +22,7 @@
       </template>
     </v-data-table>
     <add-item-dialog @refresh="refresh()" ref="editDialog" />
-    <confirmation-dialog @onConfirm="deleteBook()" ref="confirmationDialog" />
+    <confirmation-dialog @onConfirm="deleteItemConfirm()" ref="confirmationDialog" />
   </div>
 </template>
 <script>
@@ -30,6 +30,20 @@ import mixin from '@/mixins/global.mixin'
 import addItemDialog from '@/components/dialogs/AddItemDialog.vue'
 import confirmationDialog from './dialogs/ConfirmationDialog.vue'
 export default {
+  props: {
+    libro: {
+      type: Object,
+      default: null,
+    },
+    headers: {
+      type: Array,
+      default: () => [],
+    },
+    entidad:{
+      type: String,
+      default: ''
+    }
+  },
   mixins: [mixin],
   components: {
     addItemDialog,
@@ -37,17 +51,8 @@ export default {
   },
   data: () => ({
     dialog: false,
-    deleteBookId: null,
-    headers: [
-      { text: 'Titulo', value: 'nombre' },
-      { text: 'Autor', value: 'autor' },
-      { text: 'Año', value: 'year' },
-      { text: 'Precio', value: 'precio' },
-      { text: 'Stock', value: 'stock' },
-      { text: 'Descripcion', value: 'resumen' },
-      { text: 'Categorias', value: 'categorias' },
-      { text: 'Actions', value: 'actions' },
-    ],
+    tab: '',
+    deleteBookId: '',
     books: [],
     editedIndex: -1,
     editedItem: {
@@ -79,18 +84,19 @@ export default {
       this.$refs.editDialog.editedIndex = -1
     },
     editItem(item) {
-      console.log("editando item", item)
+      console.log('editando item', item)
       this.editedItem = item
       this.editedIndex = this.books.indexOf(item) // para que cambie el titulo
       this.setRefs(item)
-      this.getLibros()
+      this.getItems()
     },
     deleteItem(item) {
       this.deleteBookId = item.id
       this.$refs.confirmationDialog.dialog = true
     },
 
-    async deleteBook() {
+    async deleteItemConfirm() {
+      console.log("on delete item confirm")
       let libroResponse = await this.$axios.delete('libro/delete/' + this.deleteBookId)
       console.log(libroResponse)
       if (libroResponse.status == '204') {
@@ -100,11 +106,6 @@ export default {
           this.refresh()
         }
       }
-    },
-
-    deleteItemConfirm() {
-      this.books.splice(this.editedIndex, 1)
-      this.closeDelete()
     },
     close() {
       this.dialog = false
@@ -130,18 +131,20 @@ export default {
       this.close()
     },
 
-    async getLibros() {
+    async getItems() {
+      console.log("get libross")
       let response = await this.$axios.get('libro/list')
+      console.log(response)
       let result = this.parseImagesArrayToJson(response)
       setTimeout(() => {
         this.books = result
       }, 500)
     },
     refresh() {
-      this.getLibros()
+      this.getItems()
     },
     setRefs(item) {
-      console.log("seteando refs con item", item)
+      console.log('seteando refs con item', item)
       this.$refs.editDialog.editedIndex = this.editedIndex
       this.$refs.editDialog.editedItem = item
       this.$refs.editDialog.setAutorCombo()
@@ -151,7 +154,7 @@ export default {
     },
   },
   created() {
-    this.getLibros()
+    this.getItems()
   },
 }
 </script>
