@@ -16,15 +16,13 @@
 
     <v-tabs-items v-model="tab">
       <v-tab-item v-for="item in items" :key="item">
-        <v-card v-if="item == 'Libros'"  flat>
+        <v-card v-if="item == 'Libros'" flat>
           <libro-crud />
         </v-card>
         <v-card v-else-if="item == 'Autores'">
-            <autor-crud/>
+          <autor-crud />
         </v-card>
-        <v-card v-else-if="item == 'Categorias'">
-            CATEGORIAS
-        </v-card>
+        <v-card v-else-if="item == 'Categorias'"> CATEGORIAS </v-card>
       </v-tab-item>
     </v-tabs-items>
   </v-card>
@@ -32,13 +30,13 @@
 <script>
 import { ref, defineComponent } from '@vue/composition-api'
 import basicCrud from '@/components/BasicCrud.vue'
-import autorCrud from "@/components/Cruds/AutorCrud.vue"
+import autorCrud from '@/components/Cruds/AutorCrud.vue'
 import libroCrud from './Cruds/LibroCrud.vue'
 export default defineComponent({
   components: {
     basicCrud,
     autorCrud,
-    libroCrud
+    libroCrud,
   },
   data: () => ({
     tab: null,

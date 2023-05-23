@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-data-table :headers="headers" :items="books" class="elevation-1">
+    <v-data-table dense :headers="headers" :items="items" class="elevation-1">
       <template v-slot:top>
         <v-toolbar flat>
           <v-toolbar-title>Administrador {{ entidad }}</v-toolbar-title>
@@ -21,7 +21,6 @@
         <v-btn color="primary" @click="refresh()">Recargar</v-btn>
       </template>
     </v-data-table>
-    <add-item-dialog @refresh="refresh()" ref="editDialog" />
     <confirmation-dialog @onConfirm="deleteItemConfirm()" ref="confirmationDialog" />
   </div>
 </template>
@@ -29,7 +28,9 @@
 import mixin from '@/mixins/global.mixin'
 import addItemDialog from '@/components/dialogs/AddItemDialog.vue'
 import confirmationDialog from './dialogs/ConfirmationDialog.vue'
-export default {
+import AddLibroDialog from './AddDialogs/AddLibroDialog.vue'
+import { defineComponent } from '@vue/composition-api'
+export default defineComponent({
   props: {
     libro: {
       type: Object,
@@ -39,56 +40,30 @@ export default {
       type: Array,
       default: () => [],
     },
-    entidad:{
+    entidad: {
       type: String,
-      default: ''
-    }
+      default: '',
+    },
   },
   mixins: [mixin],
   components: {
     addItemDialog,
     confirmationDialog,
+    AddLibroDialog,
   },
   data: () => ({
     dialog: false,
-    tab: '',
-    deleteBookId: '',
-    books: [],
     editedIndex: -1,
-    editedItem: {
-      nombre: '',
-      year: '',
-      resumen: '',
-      autor: '',
-      precio: '',
-    },
-    defaultItem: {
-      nombre: '',
-      year: '',
-      resumen: '',
-      autor: '',
-      precio: '',
-    },
-    categorias: [],
+    items: [],
   }),
-
-  watch: {
-    dialog(val) {
-      val || this.close()
-    },
-  },
   methods: {
     addItem() {
-      this.editedIndex = -1
-      this.$refs.editDialog.dialog = true
-      this.$refs.editDialog.editedIndex = -1
+      this.$emit('onAdd')
     },
     editItem(item) {
       console.log('editando item', item)
-      this.editedItem = item
-      this.editedIndex = this.books.indexOf(item) // para que cambie el titulo
-      this.setRefs(item)
-      this.getItems()
+      this.editedIndex = this.items.indexOf(item) // para que cambie el titulo
+      this.$emit('onEdit', item, this.editedIndex)
     },
     deleteItem(item) {
       this.deleteBookId = item.id
@@ -96,7 +71,7 @@ export default {
     },
 
     async deleteItemConfirm() {
-      console.log("on delete item confirm")
+      console.log('on delete item confirm')
       let libroResponse = await this.$axios.delete('libro/delete/' + this.deleteBookId)
       console.log(libroResponse)
       if (libroResponse.status == '204') {
@@ -107,54 +82,16 @@ export default {
         }
       }
     },
-    close() {
-      this.dialog = false
-      this.$nextTick(() => {
-        this.editedItem = Object.assign({}, this.defaultItem)
-        this.editedIndex = -1
-      })
-    },
-
-    closeDelete() {
-      this.$nextTick(() => {
-        this.editedItem = Object.assign({}, this.defaultItem)
-        this.editedIndex = -1
-      })
-    },
-
-    save() {
-      if (this.editedIndex > -1) {
-        Object.assign(this.books[this.editedIndex], this.editedItem)
-      } else {
-        this.books.push(this.editedItem)
-      }
-      this.close()
-    },
 
     async getItems() {
-      console.log("get libross")
-      let response = await this.$axios.get('libro/list')
-      console.log(response)
-      let result = this.parseImagesArrayToJson(response)
-      setTimeout(() => {
-        this.books = result
-      }, 500)
+      this.$emit('getItems')
     },
     refresh() {
       this.getItems()
-    },
-    setRefs(item) {
-      console.log('seteando refs con item', item)
-      this.$refs.editDialog.editedIndex = this.editedIndex
-      this.$refs.editDialog.editedItem = item
-      this.$refs.editDialog.setAutorCombo()
-      this.$refs.editDialog.setCategoriasCombo()
-      this.$refs.editDialog.setImageInput()
-      this.$refs.editDialog.dialog = true
     },
   },
   created() {
     this.getItems()
   },
-}
+})
 </script>

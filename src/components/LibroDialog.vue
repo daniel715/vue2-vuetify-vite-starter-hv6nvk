@@ -13,12 +13,8 @@
           </div> -->
           <v-col cols="4">
             <div class="mt-8">
-              <v-alert v-if="isDisponible" outlined type="success" text :icon=false >
-                Libro Disponible
-              </v-alert>
-              <v-alert v-else outlined type="warning" prominent>
-                Libro actualmente no disponible
-              </v-alert>
+              <v-alert v-if="isDisponible" outlined type="success" text :icon="false"> Libro Disponible </v-alert>
+              <v-alert v-else outlined type="warning" prominent> Libro actualmente no disponible </v-alert>
               <div class="d-flex flex-column">
                 <div class="property">
                   <div class="propertyname">Titulo</div>
@@ -50,7 +46,8 @@
 </template>
 
 <script>
-export default {
+import { defineComponent } from '@vue/composition-api'
+export default defineComponent({
   props: {
     libro: {
       type: Object,
@@ -62,7 +59,7 @@ export default {
   }),
   computed: {
     mainImage() {
-      return this.libro.imageurl[this.libro.imageurl.length-1]
+      return this.libro.imageurl[this.libro.imageurl.length - 1]
     },
     otherImages() {
       return this.libro.imageurl.filter((item) => {
@@ -76,7 +73,7 @@ export default {
   created() {
     console.log('en dialogo libro', this.libro)
   },
-}
+})
 </script>
 <style scoped>
 .property {
