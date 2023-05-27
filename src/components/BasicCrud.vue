@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-data-table dense :headers="headers" :items="items" class="elevation-1">
+    <v-data-table :headers="headers" :items="items" class="elevation-1">
       <template v-slot:top>
         <v-toolbar flat>
           <v-toolbar-title>Administrador {{ entidad }}</v-toolbar-title>
@@ -10,12 +10,12 @@
         </v-toolbar>
       </template>
       <template v-slot:item.actions="{ item }">
-        <v-btn icon color="yellow" small class="mr-2" @click="editItem(item)" elevation="2">
-          <v-icon> mdi-pencil </v-icon>
-        </v-btn>
-        <v-btn icon color="red" small @click="deleteItem(item)" elevation="2">
-          <v-icon> mdi-delete </v-icon>
-        </v-btn>
+          <v-btn icon color="yellow" small class="mr-2" @click="editItem(item)" elevation="2">
+            <v-icon> mdi-pencil </v-icon>
+          </v-btn>
+          <v-btn icon color="red" small @click="deleteItem(item)" elevation="2">
+            <v-icon> mdi-delete </v-icon>
+          </v-btn>
       </template>
       <template v-slot:no-data>
         <v-btn color="primary" @click="refresh()">Recargar</v-btn>
@@ -55,6 +55,7 @@ export default defineComponent({
     dialog: false,
     editedIndex: -1,
     items: [],
+    editedItemId: '',
   }),
   methods: {
     addItem() {
@@ -66,21 +67,12 @@ export default defineComponent({
       this.$emit('onEdit', item, this.editedIndex)
     },
     deleteItem(item) {
-      this.deleteBookId = item.id
       this.$refs.confirmationDialog.dialog = true
+      this.editedItemId = item.id
     },
 
     async deleteItemConfirm() {
-      console.log('on delete item confirm')
-      let libroResponse = await this.$axios.delete('libro/delete/' + this.deleteBookId)
-      console.log(libroResponse)
-      if (libroResponse.status == '204') {
-        let libroCategoriaResponse = await this.$axios.delete('librocategoria/delete/' + this.deleteBookId)
-        if (libroCategoriaResponse.status == '204') {
-          console.log('eliminado')
-          this.refresh()
-        }
-      }
+      this.$emit('onDelete', this.editedItemId)
     },
 
     async getItems() {

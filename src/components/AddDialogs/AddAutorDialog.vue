@@ -9,7 +9,7 @@
         <v-container>
           <v-row>
             <v-col cols="12" sm="6" md="8">
-              <v-text-field outlined v-model="editedItem.nombre" label="Nombre"></v-text-field>
+              <v-text-field outlined v-model="nombre" @input="input" label="Nombre"></v-text-field>
             </v-col>
           </v-row>
         </v-container>
@@ -30,6 +30,7 @@ export default defineComponent({
   data: () => ({
     dialog: false,
     editedIndex: -1,
+    nombre: '',
     editedItem: {
       id: '',
       nombre: '',
@@ -38,6 +39,7 @@ export default defineComponent({
       id: '',
       nombre: '',
     },
+    entidad: 'autor',
   }),
   computed: {
     formTitle() {
@@ -45,24 +47,28 @@ export default defineComponent({
     },
   },
   methods: {
+    input(data) {
+      console.log(data)
+      this.nombre = data
+    },
     async save() {
       console.log(this.editedIndex)
       //editando autor
       if (this.editedIndex > -1) {
-        let respuesta = await this.$axios.patch('autor/update/' + this.editedItem.id, this.editedItem)
+        this.editedItem.nombre = this.nombre
+        let respuesta = await this.$axios.patch(this.entidad + '/update/' + this.editedItem.id, this.editedItem)
         console.log(respuesta)
         if (respuesta.status == '201') {
-          this.refresh()
         }
       } else {
         //creando nuevo autor
         this.editedItem.id = UUID.generate()
-        let response = await this.$axios.post('autor/save', this.editedItem)
+        this.editedItem.nombre = this.nombre
+        let response = await this.$axios.post(this.entidad + '/save', this.editedItem)
         if (response.status == '201') {
-          this.refresh()
         }
       }
-
+      this.refresh()
       this.close()
     },
     refresh() {
@@ -73,6 +79,7 @@ export default defineComponent({
       this.$nextTick(() => {
         this.editedItem = Object.assign({}, this.defaultItem)
         this.editedIndex = -1
+        this.nombre = ''
       })
     },
   },

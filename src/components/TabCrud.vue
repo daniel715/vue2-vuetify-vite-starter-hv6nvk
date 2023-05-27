@@ -22,7 +22,7 @@
         <v-card v-else-if="item == 'Autores'">
           <autor-crud />
         </v-card>
-        <v-card v-else-if="item == 'Categorias'"> CATEGORIAS </v-card>
+        <v-card v-else-if="item == 'Categorias'"> <categoriaCrud /> </v-card>
       </v-tab-item>
     </v-tabs-items>
   </v-card>
@@ -32,11 +32,13 @@ import { ref, defineComponent } from '@vue/composition-api'
 import basicCrud from '@/components/BasicCrud.vue'
 import autorCrud from '@/components/Cruds/AutorCrud.vue'
 import libroCrud from './Cruds/LibroCrud.vue'
+import categoriaCrud from '@/components/Cruds/CategoriaCrud.vue'
 export default defineComponent({
   components: {
     basicCrud,
     autorCrud,
     libroCrud,
+    categoriaCrud,
   },
   data: () => ({
     tab: null,

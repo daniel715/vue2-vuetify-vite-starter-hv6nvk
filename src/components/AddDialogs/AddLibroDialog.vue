@@ -9,7 +9,7 @@
         <v-container>
           <v-row>
             <v-col cols="12" sm="6" md="8">
-              <v-text-field outlined v-model="editedItem.nombre" label="Titulo"></v-text-field>
+              <v-text-field outlined v-model="tempItem.nombre" label="Titulo"></v-text-field>
             </v-col>
             <v-col cols="12" sm="6" md="8">
               <v-row>
@@ -21,16 +21,16 @@
               <categoria-combo @input="setCategorias" ref="categoriaCombo" />
             </v-col>
             <v-col cols="12" sm="6" md="8">
-              <v-text-field type="number" outlined v-model.number="editedItem.stock" label="Stock"></v-text-field>
+              <v-text-field type="number" outlined v-model.number="tempItem.stock" label="Stock"></v-text-field>
             </v-col>
             <v-col cols="12" sm="6" md="8">
-              <v-text-field type="number" outlined v-model.number="editedItem.precio" label="Precio"></v-text-field>
+              <v-text-field type="number" outlined v-model.number="tempItem.precio" label="Precio"></v-text-field>
             </v-col>
             <v-col cols="12" sm="6" md="8">
-              <v-text-field outlined v-model="editedItem.resumen" label="Descripcion"></v-text-field>
+              <v-text-field outlined v-model="tempItem.resumen" label="Descripcion"></v-text-field>
             </v-col>
             <v-col cols="12" sm="6" md="8">
-              <v-text-field outlined v-model="editedItem.year" label="Año"></v-text-field>
+              <v-text-field outlined v-model="tempItem.year" label="Año"></v-text-field>
             </v-col>
             <v-col cols="12" sm="6" md="8">
               <image-input
@@ -72,6 +72,18 @@ export default defineComponent({
     dialog: false,
     editedIndex: -1,
     imageArrayTemp: [],
+    tempItem: {
+      id: '',
+      nombre: '',
+      year: '',
+      resumen: '',
+      idAutor: '',
+      precio: 0.0,
+      stock: 0,
+      imageurl: '',
+      categoriasId: [],
+      categorias: [],
+    },
     editedItem: {
       id: '',
       nombre: '',
@@ -113,6 +125,7 @@ export default defineComponent({
     async save() {
       // editando libro
       if (this.editedIndex > -1) {
+        this.setEditedItem()
         let respuesta = await this.$axios.patch('libro/update/' + this.editedItem.id, this.editedItem)
         console.log(respuesta)
         if (respuesta.status == '200') {
@@ -127,6 +140,7 @@ export default defineComponent({
       } else {
         // creando libro nuevo
         this.editedItem.id = UUID.generate()
+        this.setEditedItem()
         let response = await this.$axios.post('libro/save', this.editedItem)
         // console.log(response)
         if (response.status == '201') {
@@ -146,8 +160,19 @@ export default defineComponent({
       if (data != null) {
         let token = `${data}`
         this.imageArrayTemp.push(token)
-        this.editedItem.imageurl = JSON.stringify(this.imageArrayTemp)
+        this.tempItem.imageurl = JSON.stringify(this.imageArrayTemp)
       }
+    },
+    setEditedItem() {
+      this.editedItem.nombre = this.tempItem.nombre
+      this.editedItem.year = this.tempItem.year
+      this.editedItem.resumen = this.tempItem.resumen
+      this.editedItem.idAutor = this.tempItem.idAutor
+      this.editedItem.precio = this.tempItem.precio
+      this.editedItem.stock = this.tempItem.stock
+      this.editedItem.imageurl = this.tempItem.imageurl
+      this.editedItem.categoriasId = this.tempItem.categoriasId
+      this.editedItem.categorias = this.tempItem.categorias
     },
     parseString(data) {
       this.payload.categoriasId = data
@@ -156,6 +181,7 @@ export default defineComponent({
       this.dialog = false
       this.$nextTick(() => {
         this.editedItem = Object.assign({}, this.defaultItem)
+        this.tempItem = Object.assign({}, this.defaultItem)
         this.editedIndex = -1
       })
       this.imageArrayTemp = []
@@ -168,16 +194,14 @@ export default defineComponent({
     setAutorId(data) {
       if (data != null) {
         console.log('en add item dialog', data)
-        this.editedItem.idAutor = data
+        this.tempItem.idAutor = data
       }
     },
     async setCategorias(data) {
       if (data != null) {
         console.log(data)
-        this.editedItem.categoriasId = await data.map((item) => item.id)
-        this.editedItem.categorias = await data.map((item) => item.nombre)
-        console.log(this.editedItem.categoriasId)
-        console.log(this.editedItem.categorias)
+        this.tempItem.categoriasId = await data.map((item) => item.id)
+        this.tempItem.categorias = await data.map((item) => item.nombre)
       }
     },
     refresh() {
@@ -186,18 +210,18 @@ export default defineComponent({
     setAutorCombo() {
       console.log('seteando autor combo')
       setTimeout(() => {
-        this.$refs.autorCombo.selectedItem = this.editedItem.idAutor
+        this.$refs.autorCombo.selectedItem = this.tempItem.idAutor
       }, 100)
     },
     setCategoriasCombo() {
       console.log('seteando categorias')
-      console.log(this.editedItem)
+      console.log(this.tempItem)
       let categorias = []
       let index = 0
-      this.editedItem.categoriasId.forEach((element) => {
+      this.tempItem.categoriasId.forEach((element) => {
         let object = {
           id: element,
-          nombre: this.editedItem.categorias[index],
+          nombre: this.tempItem.categorias[index],
         }
         categorias.push(object)
         index = index + 1
@@ -210,10 +234,10 @@ export default defineComponent({
     },
     setImageInput() {
       setTimeout(() => {
-        let array = JSON.parse(this.editedItem.imageurl)
+        let array = JSON.parse(this.tempItem.imageurl)
         this.$refs.imageInput.url = array[array.length - 1]
       }, 100)
-      this.formatImagesString(this.editedItem.imageurl[this.editedItem.imageurl.length - 1])
+      this.formatImagesString(this.tempItem.imageurl[this.tempItem.imageurl.length - 1])
     },
   },
 })

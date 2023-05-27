@@ -1,12 +1,13 @@
 <template>
   <div>
     <basic-crud
+      ref="basicCrud"
       @onEdit="onEdit"
       @getItems="getItems"
       @onAdd="onAdd"
-      ref="basicCrud"
+      @onDelete="onDelete"
       :headers="headers"
-      :entidad="'autor'"
+      :entidad="entidad"
     />
     <add-autor-dialog @refresh="refresh" ref="addAutorDialog" />
   </div>
@@ -21,9 +22,10 @@ export default defineComponent({
     AddAutorDialog,
   },
   data: () => ({
+    entidad: 'autor',
     headers: [
       { text: 'Nombre', value: 'nombre' },
-      { text: 'Actions', value: 'actions' },
+      { text: 'Actions', value: 'actions', align: 'end' },
     ],
     editedItem: {},
     editedIndex: '',
@@ -41,12 +43,20 @@ export default defineComponent({
         this.openDialog()
       }, 100)
     },
+    async onDelete(data) {
+      let response = await this.$axios.delete('autor/delete/' + data)
+      if (response.status == '204') {
+        console.log('eliminado')
+        this.refresh()
+      }
+    },
     openDialog() {
       this.$refs.addAutorDialog.dialog = true
     },
     setRefs() {
       this.$refs.addAutorDialog.editedIndex = this.editedIndex
-      this.$refs.addAutorDialog.editedItem = this.editedItem
+      this.$refs.addAutorDialog.nombre = this.editedItem.nombre
+      this.$refs.addAutorDialog.editedItem.id = this.editedItem.id
     },
     refresh() {
       this.$refs.basicCrud.refresh()
