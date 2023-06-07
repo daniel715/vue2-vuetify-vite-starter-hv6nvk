@@ -15,7 +15,9 @@
 <script>
 import basicCrud from '@/components/BasicCrud.vue'
 import addCategoriaDialog from '@/components/AddDialogs/AddCategoriaDialog.vue'
+import mixin from '@/mixins/global.mixin.js'
 export default {
+  mixins: [mixin],
   components: {
     basicCrud,
     addCategoriaDialog,
@@ -43,10 +45,10 @@ export default {
       }, 100)
     },
     async onDelete(data) {
-      let response = await this.$axios.delete(this.entidad + '/delete/' + data)
+      let response = await this.$axios.delete(this.entidad + '/delete/' + data.id)
       if (response.status == '204') {
-        console.log('eliminado')
         this.refresh()
+        console.log('eliminado y actualizado')
       }
     },
     openDialog() {

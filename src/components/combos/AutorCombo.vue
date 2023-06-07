@@ -7,7 +7,6 @@
       item-text="nombre"
       outlined
       label="Autor"
-      dense
       ref="input"
     ></v-select>
   </div>

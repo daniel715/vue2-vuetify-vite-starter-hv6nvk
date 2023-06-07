@@ -55,7 +55,7 @@ export default defineComponent({
     dialog: false,
     editedIndex: -1,
     items: [],
-    editedItemId: '',
+    editedItem: '',
   }),
   methods: {
     addItem() {
@@ -68,11 +68,11 @@ export default defineComponent({
     },
     deleteItem(item) {
       this.$refs.confirmationDialog.dialog = true
-      this.editedItemId = item.id
+      this.editedItem = item
     },
 
     async deleteItemConfirm() {
-      this.$emit('onDelete', this.editedItemId)
+      this.$emit('onDelete', this.editedItem)
     },
 
     async getItems() {

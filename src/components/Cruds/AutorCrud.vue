@@ -44,7 +44,7 @@ export default defineComponent({
       }, 100)
     },
     async onDelete(data) {
-      let response = await this.$axios.delete('autor/delete/' + data)
+      let response = await this.$axios.delete('autor/delete/' + data.id)
       if (response.status == '204') {
         console.log('eliminado')
         this.refresh()

@@ -9,7 +9,7 @@
         <v-container>
           <v-row>
             <v-col cols="12" sm="6" md="8">
-              <v-text-field outlined v-model="nombre" @input="input" label="Nombre"></v-text-field>
+              <v-text-field @keydown.enter="save" autofocus outlined v-model="nombre" @input="input" label="Nombre"></v-text-field>
             </v-col>
           </v-row>
         </v-container>
@@ -17,8 +17,8 @@
 
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="blue darken-1" text @click="close"> Cancel </v-btn>
-        <v-btn color="blue darken-1" text @click="save"> Save </v-btn>
+        <v-btn color="blue darken-1" text @click="close"> Cancelar </v-btn>
+        <v-btn color="blue darken-1" text @click="save"> Guardar </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -39,7 +39,7 @@ export default defineComponent({
       id: '',
       nombre: '',
     },
-    entidad: 'categoria'
+    entidad: 'categoria',
   }),
   computed: {
     formTitle() {

@@ -9,13 +9,10 @@
         <v-container>
           <v-row>
             <v-col cols="12" sm="6" md="8">
-              <v-text-field outlined v-model="tempItem.nombre" label="Titulo"></v-text-field>
+              <v-text-field autofocus outlined v-model="tempItem.nombre" label="Titulo"></v-text-field>
             </v-col>
             <v-col cols="12" sm="6" md="8">
-              <v-row>
-                <autor-combo @input="setAutorId" ref="autorCombo" />
-                <!-- <v-btn color="success" elevation="2" icon> <v-icon>mdi-plus</v-icon></v-btn> -->
-              </v-row>
+              <autor-combo @input="setAutorId" ref="autorCombo" />
             </v-col>
             <v-col cols="12" sm="6" md="8">
               <categoria-combo @input="setCategorias" ref="categoriaCombo" />
@@ -27,7 +24,7 @@
               <v-text-field type="number" outlined v-model.number="tempItem.precio" label="Precio"></v-text-field>
             </v-col>
             <v-col cols="12" sm="6" md="8">
-              <v-text-field outlined v-model="tempItem.resumen" label="Descripcion"></v-text-field>
+              <v-textarea  outlined v-model="tempItem.resumen" label="Descripcion"></v-textarea>
             </v-col>
             <v-col cols="12" sm="6" md="8">
               <v-text-field outlined v-model="tempItem.year" label="Año"></v-text-field>
@@ -48,8 +45,8 @@
 
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="blue darken-1" text @click="close"> Cancel </v-btn>
-        <v-btn color="blue darken-1" text @click="save"> Save </v-btn>
+        <v-btn color="blue darken-1" text @click="close"> Cancelar </v-btn>
+        <v-btn color="blue darken-1" text @click="save"> Guardar </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>

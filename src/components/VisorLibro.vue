@@ -5,7 +5,13 @@
         <v-row>
           <v-col v-for="item in items" :key="item.id" class="d-flex child-flex" cols="2">
             <v-hover v-slot="{ hover }">
-              <v-card :elevation="hover ? 12 : 1" :class="{ 'on-hover': hover }" @click="openModal(item)">
+              <v-card
+                :style="hover ? '' : 'opacity: 10'"
+                :elevation="hover ? 5 : 0"
+                :class="{ 'on-hover': hover }"
+                class="pa-5"
+                @click="openModal(item)"
+              >
                 <v-img :src="item.imageurl[item.imageurl.length - 1]" aspect-ratio="1">
                   <template v-slot:placeholder>
                     <v-row class="ma-0" align-items="center" justify="center">
@@ -13,6 +19,9 @@
                     </v-row>
                   </template>
                 </v-img>
+                <div>
+                  {{ item.nombre }}
+                </div>
               </v-card>
             </v-hover>
           </v-col>
@@ -56,6 +65,6 @@ export default {
 }
 
 .v-card:not(.on-hover) {
-  opacity: 1;
+  opacity: 5;
 }
 </style>

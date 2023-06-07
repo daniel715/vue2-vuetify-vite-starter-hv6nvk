@@ -1,6 +1,5 @@
 <template>
   <div>
-    <v-col cols="12">
       <v-combobox
         v-model="select"
         :items="items"
@@ -11,7 +10,6 @@
         chips
         outlined
       ></v-combobox>
-    </v-col>
   </div>
 </template>
   

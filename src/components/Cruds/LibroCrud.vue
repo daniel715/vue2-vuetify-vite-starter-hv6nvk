@@ -31,7 +31,7 @@ export default {
       { text: 'Stock', value: 'stock' },
       { text: 'Descripcion', value: 'resumen' },
       { text: 'Categorias', value: 'categorias' },
-      { text: 'Actions', value: 'actions', align: 'end' },
+      { text: 'Actions', value: 'actions', align: 'end', width: "100px" },
     ],
     editedItem: {},
     editedIndex: '',
@@ -52,10 +52,10 @@ export default {
       }, 100)
     },
     async onDelete(data) {
-      let libroResponse = await this.$axios.delete('libro/delete/' + data)
+      let libroResponse = await this.$axios.delete('libro/delete/' + data.id)
       console.log(libroResponse)
       if (libroResponse.status == '204') {
-        let libroCategoriaResponse = await this.$axios.delete('librocategoria/delete/' + data)
+        let libroCategoriaResponse = await this.$axios.delete('librocategoria/delete/' + data.id)
         if (libroCategoriaResponse.status == '204') {
           console.log('eliminado')
           this.refresh()

@@ -44,7 +44,7 @@
     </v-container>
 
     <transition name="fade" mode="out-in">
-      <v-row v-if="showVisor" align="center" justify="center">
+      <v-row v-if="showVisor" align="center" justify="center" style="max-height: 100vh;">
         <v-col cols="8">
           <div class="visor-libro">
             <visor-libro :items="items" ref="visorlibro" />
