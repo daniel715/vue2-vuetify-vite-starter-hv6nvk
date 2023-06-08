@@ -19,8 +19,10 @@
                     </v-row>
                   </template>
                 </v-img>
-                <div>
-                  {{ item.nombre }}
+                <div class="my-2">
+                  <p style="font-weight: bold; font-family:'Courier New', Courier, monospace">
+                    {{ item.nombre }}
+                  </p>
                 </div>
               </v-card>
             </v-hover>

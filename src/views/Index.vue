@@ -33,7 +33,13 @@
                   @click="buscarLibrosPorCategoria(categoria.nombre)"
                   v-for="categoria in categorias"
                   :key="categoria.id"
+                  class="ma-2"
+                  color="pink"
+                  label
+                  text-color="white"
+                  style="opacity: 0.8;"
                 >
+                  <v-icon class="mr-2" start icon="">mdi-label</v-icon>
                   {{ categoria.nombre }}
                 </v-chip>
               </v-chip-group>
@@ -44,10 +50,12 @@
     </v-container>
 
     <transition name="fade" mode="out-in">
-      <v-row v-if="showVisor" align="center" justify="center" style="max-height: 100vh;">
-        <v-col cols="8">
-          <div class="visor-libro">
-            <visor-libro :items="items" ref="visorlibro" />
+      <v-row v-if="showVisor" align="center" justify="center" style="max-height: 100vh">
+        <v-col class="mt-15" cols="8">
+          <div class="mt-15">
+            <div class="visor-libro mt-15" style="height: 55vh; overflow-y: scroll">
+              <visor-libro :items="items" ref="visorlibro" />
+            </div>
           </div>
         </v-col>
       </v-row>
@@ -155,7 +163,6 @@ export default defineComponent({
 .visor-libro {
   background-color: rgba(247, 247, 247, 0.87);
   opacity: 0.8;
-  height: 40vh;
 }
 </style>
   
