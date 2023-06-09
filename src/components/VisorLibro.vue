@@ -3,7 +3,7 @@
     <v-row>
       <v-col>
         <v-row>
-          <v-col v-for="item in items" :key="item.id" class="d-flex child-flex" cols="2">
+          <v-col v-for="item in items" :key="item.id" class="d-flex child-flex" cols="3">
             <v-hover v-slot="{ hover }">
               <v-card
                 :style="hover ? '' : 'opacity: 10'"
