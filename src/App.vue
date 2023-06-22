@@ -11,8 +11,9 @@
 import { defineComponent } from '@vue/composition-api'
 import index from './views/Index.vue'
 import admin from './views/Admin.vue'
-
+import datamixin from "./mixins/data.mixin.js"
 export default defineComponent({
+  mixins: [datamixin],
   name: 'App',
   data:() => ({
     isRouterLoaded:false
@@ -28,7 +29,11 @@ export default defineComponent({
     },
   },
   created() {
-    console.log('route', this.$route.meta.layout)
+    this.getLibros()
+    // this.getAutores()
+    // this.getCategorias()
+    // this.getPedidos()
+
     setTimeout(() => {
       this.isRouterLoaded = true;
     }, 500);
