@@ -30,9 +30,9 @@ export default defineComponent({
   },
   created() {
     this.getLibros()
-    // this.getAutores()
-    // this.getCategorias()
-    // this.getPedidos()
+    this.getAutores()
+    this.getCategorias()
+    this.getPedidos()
 
     setTimeout(() => {
       this.isRouterLoaded = true;

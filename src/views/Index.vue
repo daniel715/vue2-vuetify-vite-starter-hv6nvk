@@ -30,14 +30,14 @@
             <v-row justify="center">
               <v-chip-group active-class="primary--text">
                 <v-chip
-                  @click="buscarLibrosPorCategoria(categoria.nombre)"
+                  @click="buscarLibrosPorCategoria(categoria)"
                   v-for="categoria in categorias"
                   :key="categoria.id"
                   class="ma-2"
                   color="pink"
                   label
                   text-color="white"
-                  style="opacity: 0.8;"
+                  style="opacity: 0.8"
                 >
                   <v-icon class="mr-2" start icon="">mdi-label</v-icon>
                   {{ categoria.nombre }}
@@ -102,9 +102,11 @@ export default defineComponent({
     },
     async buscarLibrosPorCategoria(data) {
       this.loading = true
-      this.response = await this.$axios.get('/libro/buscarporcategoria/' + data)
-      if (this.response.status == '200') this.success = true
-      this.items = await this.parseImagesArrayToJson(this.response)
+      this.response = await this.$axios.get('/libro/buscarporcategoria/' + data.id)
+      if (this.response.status == '200') {
+        this.success = true
+        this.items = this.response.data
+      }
       setTimeout(() => {
         this.showVisor = true
         setTimeout(() => {
@@ -112,10 +114,6 @@ export default defineComponent({
         }, 500)
       }, 500)
       this.loading = false
-    },
-    async getCategorias() {
-      let response = await this.$axios.get('categoria/list')
-      this.categorias = response.data
     },
     input(data) {
       this.param = data
@@ -134,12 +132,12 @@ export default defineComponent({
       else return ''
     },
   },
+  created() {
+    this.categorias = this.$store.state.categorias
+  },
   setup() {
     const count = ref(0)
     return { count }
-  },
-  created() {
-    this.getCategorias()
   },
 })
 </script>

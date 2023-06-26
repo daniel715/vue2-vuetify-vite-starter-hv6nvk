@@ -1,21 +1,29 @@
 import Vue from 'vue';
-import Vuex, { createLogger } from 'vuex';
+import Vuex from 'vuex';
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
   modules: {},
-  plugins: [createLogger()],
   state: {
-    count: 0,
-    isMobile: false
+    libros: [],
+    autores: [],
+    categorias: [],
+    pedidos: []
   },
+
   getters: {
-    count(state) {
-      return state.count;
+    libros(state) {
+      return state.libros;
     },
-    doubleCount(state) {
-      return state.count * 2;
+    autores(state) {
+      return state.autores;
+    },
+    categorias(state) {
+      return state.categorias;
+    },
+    pedidos(state) {
+      return state.pedidos;
     }
   },
   mutations: {

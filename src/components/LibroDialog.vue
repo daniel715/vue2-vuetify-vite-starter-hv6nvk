@@ -4,7 +4,7 @@
       <v-card>
         <div class="mx-auto pa-10" style="max-width: 70%">
           <div class="mx-auto">
-            <v-img :src="mainImage" />
+            <!-- <v-img :src="mainImage" /> -->
           </div>
           <!-- <div class="pa-5">
             <v-img :src="mainImage" max-width="50%" />
@@ -63,9 +63,9 @@ export default defineComponent({
     dialog: false,
   }),
   computed: {
-    mainImage() {
-      return this.libro.imageurl[this.libro.imageurl.length - 1]
-    },
+    // mainImage() {
+    //   return this.libro.imageurl[this.libro.imageurl.length - 1]
+    // },
     otherImages() {
       return this.libro.imageurl.filter((item) => {
         if (this.libro.imageurl.indexOf(item) != '0') return item

@@ -14,7 +14,23 @@ export default {
                 libros[index].categorias = array;
             }
             this.$store.state.libros = libros
-
         },
+
+        async getAutores() {
+            let response = await this.$axios.get("autor/list")
+            this.$store.state.autores = response.data
+            console.log("this.$store.state.autores", this.$store.state.autores)
+        },
+
+        async getCategorias() {
+            let response = await this.$axios.get("categoria/list")
+            this.$store.state.categorias = response.data
+            console.log("this.$store.state.categorias", this.$store.state.categorias)
+        },
+        async getPedidos() {
+            let response = await this.$axios.get("pedido/list")
+            this.$store.state.pedidos = response.data
+            console.log("this.$store.state.pedidos", this.$store.state.pedidos)
+        }
     },
 }

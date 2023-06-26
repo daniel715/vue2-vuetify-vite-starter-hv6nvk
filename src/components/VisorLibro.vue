@@ -12,7 +12,7 @@
                 class="pa-5"
                 @click="openModal(item)"
               >
-                <v-img :src="item.imageurl[item.imageurl.length - 1]" aspect-ratio="1">
+                <v-img src="https://img.freepik.com/vector-gratis/libro-blanco-sobre-fondo-blanco_1308-23052.jpg?w=2000" aspect-ratio="1">
                   <template v-slot:placeholder>
                     <v-row class="ma-0" align-items="center" justify="center">
                       <v-progress-circular indeterminate color="grey lighten-5"></v-progress-circular>
